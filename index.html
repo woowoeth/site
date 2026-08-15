@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme:dark)">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OurWord.ai · 把想法做成能打开的东西</title>
+<meta name="description" content="OurWord.ai 做面向中文读者的小工具。单文件、无依赖、打开就能用，全部计算在你的浏览器里完成。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23fafafa'/%3E%3Crect x='2' y='2' width='5' height='5' fill='%230a0a0a'/%3E%3Crect x='9' y='9' width='5' height='5' fill='%230a0a0a'/%3E%3C/svg%3E">
+<style>
+:root{
+  color-scheme:light dark;
+  --ink:#0a0a0a; --ink-70:#404040; --ink-50:#666666; --ink-30:#b3b3b3;
+  --plate:#ffffff; --chk-a:#ffffff; --chk-b:#ececec;
+  --hairline:#e5e5e5; --surface:#ffffff; --bg:#fafafa; --tint:#f0f0f0;
+  --cta-fill:#0a0a0a; --cta-text:#ffffff;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  --fs-micro:10px; --fs-caption:11px; --fs-body:13px; --fs-strong:14px; --fs-heading:16px; --fs-display:20px;
+  --h-sm:28px; --h-md:36px; --h-lg:46px;
+  --r-block:8px; --r-card:16px;
+  --shadow-card:0 1px 2px rgba(10,10,10,.03),0 6px 20px rgba(10,10,10,.06);
+  --shadow-cta:0 1px 2px rgba(10,10,10,.10),0 4px 14px rgba(10,10,10,.12);
+  --font:'Inter','Noto Sans CJK SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);
+  font-size:var(--fs-strong);line-height:1.65;-webkit-font-smoothing:antialiased}
+.caps{letter-spacing:.07em}
+.wrap{max-width:920px;margin:0 auto;padding:0 var(--sp-5)}
+
+header{border-bottom:1px solid var(--hairline);background:var(--bg);position:sticky;top:0;z-index:5}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);height:60px}
+.mark{display:flex;align-items:center;gap:var(--sp-3);text-decoration:none;color:inherit}
+.glyph{width:20px;height:20px;display:grid;grid-template:repeat(2,1fr)/repeat(2,1fr);flex:none;
+  border:1px solid var(--hairline)}
+.glyph i{display:block}
+.glyph i:nth-child(1),.glyph i:nth-child(4){background:var(--ink)}
+.mark b{font-size:var(--fs-heading);font-weight:700}
+nav{display:flex;gap:var(--sp-5)}
+nav a{font-size:var(--fs-body);color:var(--ink-50);text-decoration:none;
+  display:inline-flex;align-items:center;min-height:var(--h-sm)}
+nav a:hover{color:var(--ink)}
+a:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:var(--sp-1)}
+
+.hero{padding:var(--sp-6) 0}
+.eyebrow{font-size:var(--fs-caption);font-weight:700;color:var(--ink-50);margin:0 0 var(--sp-4)}
+h1{margin:0 0 var(--sp-5);font-size:clamp(30px,6.2vw,42px);line-height:1.2;font-weight:700;letter-spacing:-.02em}
+.lede{margin:0;font-size:var(--fs-heading);color:var(--ink-70);max-width:29em}
+
+/* 整站唯一出现彩色的地方 */
+.strip{margin-top:var(--sp-6);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  padding:var(--sp-5) 0;display:flex;gap:var(--sp-5);align-items:flex-start;overflow-x:auto;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip figure{margin:0;flex:none;text-align:center}
+.strip canvas{width:48px;height:48px;display:block;image-rendering:pixelated}
+.strip figcaption{margin-top:var(--sp-2);font-size:var(--fs-caption);color:var(--ink-50);white-space:nowrap}
+
+section{padding:var(--sp-6) 0 0}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-4);
+  margin-bottom:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--hairline)}
+.sechead h2{margin:0;font-size:var(--fs-heading);font-weight:700}
+.sechead span{font-size:var(--fs-caption);color:var(--ink-50);font-weight:700}
+
+.feature{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--sp-6)}
+.fgrid{display:grid;gap:var(--sp-5)}
+@media(min-width:760px){.fgrid{grid-template-columns:1fr 216px;align-items:center;gap:var(--sp-6)}}
+.pill{display:inline-flex;align-items:center;height:var(--h-sm);padding:0 var(--sp-3);
+  border-radius:calc(var(--h-sm)/2);background:var(--ink);color:var(--cta-text);
+  font-size:var(--fs-caption);font-weight:700;margin-bottom:var(--sp-4)}
+.feature h3{margin:0 0 var(--sp-3);font-size:var(--fs-display);font-weight:700}
+.feature p{margin:0 0 var(--sp-5);color:var(--ink-70);font-size:var(--fs-strong);max-width:33em}
+.stats{display:flex;justify-content:space-between;max-width:340px;margin-bottom:var(--sp-5)}
+.stats .n{font-size:var(--fs-display);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stats .k{font-size:var(--fs-caption);color:var(--ink-50);white-space:nowrap}
+.demo{background:var(--tint);border-radius:var(--r-block);padding:var(--sp-4)}
+.demo canvas{width:100%;max-width:176px;aspect-ratio:1/1;image-rendering:pixelated;display:block;margin:0 auto}
+.demo p{margin:var(--sp-3) 0 0;font-size:var(--fs-caption);color:var(--ink-50);text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.cta{display:inline-flex;align-items:center;height:var(--h-lg);padding:0 var(--sp-5);
+  border-radius:calc(var(--h-lg)/2);background:var(--cta-fill);color:var(--cta-text);
+  font-size:var(--fs-strong);font-weight:700;text-decoration:none;border:0;cursor:pointer;
+  box-shadow:var(--shadow-cta);transition:transform .18s ease-out}
+.cta:active{transform:scale(.96)}
+
+.rows{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--sp-4)}
+.row{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-4);border-radius:var(--r-block)}
+.row+.row{margin-top:var(--sp-2)}
+.row .idx{font-size:var(--fs-caption);font-weight:700;color:var(--ink-50);
+  font-variant-numeric:tabular-nums;flex:none;width:20px;padding-top:2px}
+.row .body{flex:1;min-width:0}
+.row h4{margin:0 0 var(--sp-1);font-size:var(--fs-strong);font-weight:700}
+.row p{margin:0;font-size:var(--fs-body);color:var(--ink-50)}
+.row .state{flex:none;font-size:var(--fs-caption);font-weight:700;color:var(--ink-70);
+  background:var(--tint);border-radius:var(--r-block);padding:var(--sp-1) var(--sp-2);white-space:nowrap}
+.row.live{background:var(--tint)}
+.row.live .state{background:var(--ink);color:var(--cta-text)}
+
+.note{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:var(--sp-6)}
+.note h3{margin:0 0 var(--sp-3);font-size:var(--fs-strong);font-weight:700}
+.note h3+p{margin-bottom:var(--sp-5)}
+.note p{margin:0;color:var(--ink-70);font-size:var(--fs-body)}
+.note p:last-child{margin-bottom:0}
+
+footer{border-top:1px solid var(--hairline);margin-top:var(--sp-6);padding:var(--sp-5) 0 var(--sp-6)}
+.foot{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-5);justify-content:space-between;
+  font-size:var(--fs-caption);color:var(--ink-50)}
+
+/* ---------- 深色模式 ----------
+   中性阶整条翻转；但像素图自带深色描边，落在深底上会消失，
+   所以画布/缩略图始终保留一块"亮版"，像修图软件的透明棋盘那样不跟着变暗。
+   深色下阴影不可见，卡片分层改用 1px 描边环（用 box-shadow 做，不占布局）。 */
+@media (prefers-color-scheme:dark){
+  :root{
+    --ink:#f2f2f2; --ink-70:#c4c4c4; --ink-50:#9a9a9a; --ink-30:#5a5a5a;
+    --hairline:#2a2a2a; --surface:#161616; --bg:#0d0d0d; --tint:#232323;
+    --cta-fill:#f2f2f2; --cta-text:#0d0d0d;
+    --plate:#e6e6e6; --chk-a:#e6e6e6; --chk-b:#d2d2d2;
+    --shadow-card:0 0 0 1px var(--hairline);
+    --shadow-cta:0 0 0 1px rgba(255,255,255,.10);
+  }
+}
+
+.strip canvas{background:var(--plate);border-radius:var(--sp-1)}
+.demo canvas{background:var(--plate);border-radius:var(--r-block)}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="mark" href="/"><span class="glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>OurWord.ai</b></a>
+    <nav>
+      <a href="#works">作品</a>
+      <a href="#about">关于</a>
+      <a href="./pixeldex/">像素图鉴</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <p class="eyebrow"><span class="caps">OURWORD.AI</span></p>
+    <h1>把想法做成<br>真的能打开的东西。</h1>
+    <p class="lede">面向中文读者的小工具。一个网页解决一件事，不用注册、不用配置，全部计算在你自己的浏览器里完成。</p>
+    <div class="strip" id="strip" aria-label="像素图鉴样例图样"></div>
+  </div>
+
+  <section>
+    <div class="sechead">
+      <h2>正在跑的</h2>
+      <span class="caps">01</span>
+    </div>
+    <div class="feature">
+      <div class="fgrid">
+        <div>
+          <span class="pill">新</span>
+          <h3>像素图鉴 PIXELDEX</h3>
+          <p>输入一个词，当场画一张 16×16 像素图。词库里有就直接调出手绘图样；词里含收录的字词也算数——「深夜加班」取「加班」画电脑。都对不上时给一枚由字形推出的印记，并且明说它不描述这个词。</p>
+          <div class="stats">
+            <div><div class="n">45</div><div class="k">手绘图样</div></div>
+            <div><div class="n">16×16</div><div class="k">原生像素</div></div>
+            <div><div class="n">0</div><div class="k">上传字节</div></div>
+          </div>
+          <a class="cta" href="./pixeldex/">打开像素图鉴</a>
+        </div>
+        <div class="demo">
+          <canvas id="demo" width="256" height="256" role="img" aria-label="像素图鉴生成的示例图样"></canvas>
+          <p id="demoCap">&nbsp;</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="works">
+    <div class="sechead">
+      <h2>做过的</h2>
+      <span class="caps">02</span>
+    </div>
+    <div class="rows">
+      <div class="row live">
+        <div class="idx">01</div>
+        <div class="body"><h4>像素图鉴 PIXELDEX</h4><p>输入词生成 16×16 像素图，可导出 PNG</p></div>
+        <div class="state">在线</div>
+      </div>
+      <div class="row">
+        <div class="idx">02</div>
+        <div class="body"><h4>pixelpad</h4><p>24×24 原生像素画引擎，按光源塑形、多材质色阶、选择性描边</p></div>
+        <div class="state">待恢复</div>
+      </div>
+      <div class="row">
+        <div class="idx">03</div>
+        <div class="body"><h4>想法板</h4><p>中文创意发现板，五字段卡片格式与来源池治理</p></div>
+        <div class="state">待恢复</div>
+      </div>
+      <div class="row">
+        <div class="idx">04</div>
+        <div class="body"><h4>Skill Store</h4><p>技能索引与自动采集流水线</p></div>
+        <div class="state">待恢复</div>
+      </div>
+      <div class="row">
+        <div class="idx">05</div>
+        <div class="body"><h4>AI 与就业二十年</h4><p>长周期分析报告</p></div>
+        <div class="state">待恢复</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="sechead">
+      <h2>关于</h2>
+      <span class="caps">03</span>
+    </div>
+    <div class="note">
+      <h3>这里做什么</h3>
+      <p>做小而完整的东西：一个网页解决一件事，代码放在一个文件里，打开就能用。不做需要注册、需要配置、需要读文档才能上手的产品。</p>
+      <h3>为什么全在浏览器里跑</h3>
+      <p>工具不该知道你在想什么。像素图鉴的全部计算发生在你的设备上，输入的词不会离开这台机器，服务器只负责把页面发给你。</p>
+      <h3>能不能拿去用</h3>
+      <p>可以。生成的图归你，商用不用问。</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>OurWord.ai</span>
+    <span>全部在浏览器里完成，不上传任何东西</span>
+  </div>
+</footer>
+
+<script src="./pixeldex/engine.js"></script>
+<script>
+/* 首页只借引擎画图，不加载工具的交互层 */
+(function(){
+  const N=16;
+  function paint(cv,word){
+    const m=(typeof resolve==='function')?resolve(word):null;
+    let grid,pal;
+    if(m&&m.sp){ grid=m.sp.px.map(r=>r.split('')); pal=m.sp.pal; }
+    else { const f=forge(word,0); grid=f.grid; pal=f.pal; }
+    const g=cv.getContext('2d'); g.imageSmoothingEnabled=false;
+    const S=cv.width/N;
+    g.clearRect(0,0,cv.width,cv.height);
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+      const ch=grid[y][x]; if(ch==='.'||!pal[ch])continue;
+      g.fillStyle=pal[ch]; g.fillRect(x*S,y*S,S,S);
+    }
+  }
+  const SAMPLES=['猫','火箭','咖啡','齿轮','闪电','雨云','宝石','闹钟','鸟','蘑菇','图表','沙漏'];
+  const strip=document.getElementById('strip');
+  SAMPLES.forEach(w=>{
+    const fig=document.createElement('figure');
+    const c=document.createElement('canvas'); c.width=c.height=128; paint(c,w);
+    const cap=document.createElement('figcaption'); cap.textContent=w;
+    fig.appendChild(c); fig.appendChild(cap); strip.appendChild(fig);
+  });
+  const demo=document.getElementById('demo'), cap=document.getElementById('demoCap');
+  const REEL=['深夜加班','早八','年终奖','焦虑','自由','运气','摸鱼','灵感','熬夜','充电','倒计时','萌芽'];
+  let i=0;
+  function tick(){
+    const w=REEL[i%REEL.length]; i++;
+    paint(demo,w);
+    const m=resolve(w);
+    cap.textContent = m ? w+' → '+m.sp.cn : w+' → 印记';
+  }
+  tick();
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(tick,2400);
+})();
+</script>
+</body>
+</html>
