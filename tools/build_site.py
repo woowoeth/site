@@ -30,24 +30,6 @@ PROJECTS = [
 
 def e(s): return html.escape(s)
 
-def hero(seed=20260820):
-    cols, rows, gap, r = 48, 7, 24, 2.6
-    w, h = cols * gap, rows * gap
-    picks, x = set(), seed
-    while len(picks) < 22:
-        x = (1103515245 * x + 12345) % 2147483648
-        picks.add(x % (cols * rows))
-    d = []
-    for i in range(cols * rows):
-        cx, cy = (i % cols) * gap + gap / 2, (i // cols) * gap + gap / 2
-        if i in picks:
-            d.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="var(--ink)"/>' % (cx, cy, r * 1.7))
-        else:
-            o = 0.30 - 0.22 * (i % cols) / cols
-            d.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="var(--ink)" opacity="%.2f"/>' % (cx, cy, r, o))
-    return ('<svg class="nb-hero" viewBox="0 0 %d %d" role="img" aria-label="点阵示意：站点索引" '
-            'preserveAspectRatio="xMidYMid slice">%s</svg>' % (w, h, "".join(d)))
-
 CSS = """
 :root{
   color-scheme:light only;
@@ -76,8 +58,6 @@ header{padding:var(--sp-6) 0 0}
 .brand{font-size:var(--fs-micro);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-50);margin-bottom:var(--sp-2)}
 h1{font-size:var(--fs-display);font-weight:700;letter-spacing:-.01em;line-height:1.2;margin:0 0 var(--sp-2)}
 .lede{margin:0;font-size:var(--fs-body);color:var(--ink-50);max-width:34em}
-svg.nb-hero{display:block;width:100%;height:88px;margin:var(--sp-5) 0;
-  border-radius:var(--r-card);background:var(--surface);box-shadow:var(--shadow-card)}
 .sec{font-size:var(--fs-caption);font-weight:700;color:var(--ink-50);text-transform:uppercase;
   letter-spacing:.07em;margin:0 0 var(--sp-3)}
 .item{display:flex;align-items:flex-start;gap:var(--sp-4);padding:var(--sp-5);
@@ -147,7 +127,6 @@ def main():
   <h1>全部项目</h1>
   <p class="lede">一个人做的几件小东西，各自解决一件具体的事。</p>
 </header>
-%s
 <main id="main">
   <h2 class="sec">项目 · %d</h2>
 %s
@@ -158,7 +137,7 @@ def main():
 </div>
 </body>
 </html>
-""" % (SITE, json.dumps(ld, ensure_ascii=False), CSS, hero(), len(items), "\n".join(items))
+""" % (SITE, json.dumps(ld, ensure_ascii=False), CSS, len(items), "\n".join(items))
     out = os.environ.get("OUT", "index.html")
     open(out, "w", encoding="utf-8").write(doc)
     print("wrote", out, len(doc), "chars,", len(items), "projects")
