@@ -17,7 +17,7 @@ PROJECTS = [
     {"repo": "skill",  "path": "/skill/",  "icon": "/skill/icon.svg",
      "zh": "Skill 商店", "en": "Skill Store",
      "desc": "每天上新的好玩 Agent Skill 精选店，逐个读过再上架。"},
-    {"repo": "zouni",  "path": "https://zouni.app/", "icon": "/zouni/icon.svg",
+    {"repo": "zouni",  "path": "https://zouni.app/", "icon": "https://zouni.app/icon.svg",
      "zh": "走你", "en": "Zouni",
      "desc": "输入去哪儿、几天、多少预算，出一份能直接照着走的攻略。"},
     {"repo": "ai",     "path": "/ai/",     "icon": "/ai/icon.svg",
@@ -153,7 +153,7 @@ def main():
 %s
 </main>
 <footer>
-  图标与页面均为纯静态，无外链资源 · <a href="https://github.com/woowoeth" target="_blank" rel="noopener">GitHub</a>
+  每个项目的图标取自该项目自己的仓库 · <a href="https://github.com/woowoeth" target="_blank" rel="noopener">GitHub</a>
 </footer>
 </div>
 </body>
