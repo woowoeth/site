@@ -10,26 +10,26 @@ SELF = "site"
 PROJECTS = [
     {"repo": "",       "path": "/",        "icon": "/favicon.svg",
      "zh": "人类世界生存法则", "en": "Human World",
-     "desc": "89 位人物与典籍的生存智慧，跨越 2600 年。每一条写清这个人真正留下的那个想法，以及今天怎么用。"},
+     "desc": "70+ 个人物与典籍的生存智慧，跨越 2600 年。每一条写清这个人真正留下的那一个想法，以及今天怎么用。"},
     {"repo": "skill",  "path": "/skill/",  "icon": "/skill/icon.svg",
-     "zh": "Skill 商店", "en": "Skill Store",
-     "desc": "每天上新的好玩 Agent Skill 精选店，逐个读过再上架。"},
+     "zh": "品味", "en": "Taste",
+     "desc": "叫 SKILL.md 的文件已经百万量级，没人数得清。我们只挑值得装的，并且把挑它的理由写下来。"},
     # zouni 的图标内联成 data URI，不再跨站取 —— 导航页七条里只有它是
     # 跨站取图（其余都是 /skill/icon.svg 这样的同源路径），也只有它不显示。
     # 实测 https://zouni.app/icon.svg 在部分网络下被 302 到 urlblock.php。
     # 根因是过滤还是 CORS 不重要：**跨站依赖去掉了，这条就不会再坏。**
     {"repo": "zouni",  "path": "https://zouni.app/", "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciPjx0aXRsZT7otbDkvaA8L3RpdGxlPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiByeD0iMjIiIGZpbGw9IiMwYTBhMGEiLz48cGF0aCBkPSJNMjggNjIgUTUwIDMwIDcyIDYyIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNzIiIGN5PSIzOCIgcj0iNyIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg==",
      "zh": "走你", "en": "Zouni",
-     "desc": "输入去哪儿、几天、多少预算，出一份能直接照着走的攻略。"},
+     "desc": "计划赶得上变化。输入去哪儿、几天、多少预算，出一份能直接照着走的攻略；路上有变，它把后面重排一遍。"},
     {"repo": "ai",     "path": "/ai/",     "icon": "/ai/icon.svg",
      "zh": "AI 泡沫检测仪", "en": "AI Bubble Monitor",
-     "desc": "把「这轮是不是泡沫」拆成可核对的红线，逐条记分，破了就标出来。"},
+     "desc": "AI 泡沫监测面板：环境 / 结构 / 引爆三层，20 条红线，破了就标出来。"},
     # podcast 一直在线上 index.html 里，却**从来没进过 PROJECTS** ——
     # 也就是说这个生成器相对线上页是旧的。2026-08-25 我照它跑了一次构建，
     # 就把「原声」整条挤掉了，是店主发现的。补回来，并在 main() 末尾加了闸。
     {"repo": "podcast", "path": "/podcast/", "icon": "/podcast/icon.svg",
      "zh": "原声", "en": "Podcast",
-     "desc": "每天从 49 档中英文播客里挑出值得记住的判断。要点和金句都锚定到原声的时间戳，金句逐字校验过才发——查不到出处的一律不上站。"},
+     "desc": "世界太吵，来原声听播客。每天从 61 档中英文播客里挑出值得记住的判断，要点和金句都带时间戳。"},
 ]
 
 def e(s): return html.escape(s)
