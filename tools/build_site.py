@@ -123,6 +123,69 @@ def assert_no_drop(new_html: str, out: str) -> None:
             "如果不是，说明 PROJECTS 比线上页旧了，先把缺的补进 PROJECTS。")
 
 
+
+# ---------------------------------------------------------------------------
+# 每次构建都去各站取一遍它自己怎么称呼自己 —— **导航里不许存过期的副本。**
+#
+# 2026-08-25 加的。加之前导航写「89 位人物」而首页自己写 70+，
+# 写「49 档播客」而原声自己写 61 档，把 skill 站叫「Skill 商店」
+# 而它自己的 <title> 是「品味 — 中文 Agent Skill 精选」。
+# **三处全是存副本存出来的**：副本写下来那天是对的，然后项目往前走，副本留在原地。
+#
+# 为什么不干脆自动抓来直接用：各站的 h1 形态不一致（原声的 h1 是「原声.」带句号，
+# 品味压根没有 h1），meta description 动辄一百多字，直接塞进导航会把版式撑烂。
+# 导航文案是**编辑过的一行**，该由人写。
+#
+# 所以取的是「核对」而不是「替换」：抓下来比一遍，对不上就**拒绝构建**并打印差异。
+# 这样文案仍然是人写的，但它不可能悄悄过期 —— 和 assert_no_drop 同一个思路：
+# **闸门装在「什么都不做就会出错」的那一侧。**
+#
+# 抓不到的（网络拦截、站临时挂了）打印警告继续，不阻断 —— 抓不到不等于对不上。
+LIVE_CHECK = {
+    # repo -> 该项目自己页面上，导航这条描述里必须能对上的关键片段
+    "":        ["70+", "2600 年"],
+    "skill":   ["品味", "只挑值得装的"],
+    "zouni":   ["计划赶得上变化"],
+    "ai":      ["泡沫"],
+    "podcast": ["世界太吵", "61 档"],
+}
+
+
+def _fetch(url, timeout=12):
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "ourword-site-build"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def assert_live_copy():
+    """各站自称 vs 导航文案。对不上就拒绝构建；抓不到只警告。"""
+    import re as _re
+    bad, unreachable = [], []
+    for pr in PROJECTS:
+        need = LIVE_CHECK.get(pr["repo"])
+        if not need:
+            continue
+        url = pr["path"] if pr["path"].startswith("http") else SITE + pr["path"]
+        try:
+            page = _fetch(url)
+        except Exception as e:                       # 网络拦截、站临时挂了
+            unreachable.append((url, str(e)[:60]))
+            continue
+        flat = _re.sub(r"\s+", " ", page)
+        miss = [k for k in need if k not in flat]
+        if miss:
+            bad.append((url, miss))
+    for url, why in unreachable:
+        print(f"  ! 取不到 {url}（{why}）—— 这条没核对上，不等于它对不上")
+    if bad:
+        raise SystemExit(
+            "拒绝构建：以下项目自己页面上已经找不到导航文案依据的说法了——\n"
+            + "".join(f"  {u}  找不到：{'、'.join(m)}\n" for u, m in bad)
+            + "去那个站看它现在怎么说自己，把 PROJECTS 的 zh/desc 和 LIVE_CHECK 一起更新。\n"
+            "（导航文案是编辑过的一行，该由人写；这里只保证它不会悄悄过期。）")
+
+
 def main():
     items = []
     for p in PROJECTS:
@@ -177,6 +240,8 @@ def main():
 """ % (SITE, json.dumps(ld, ensure_ascii=False), CSS, len(items), "\n".join(items))
     out = os.environ.get("OUT", "index.html")
     assert_no_drop(doc, out)          # 漏掉条目是静默的，所以闸装在这里
+    if os.environ.get("SKIP_LIVE") != "1":
+        assert_live_copy()            # 文案过期也是静默的，闸同样装在这里
     open(out, "w", encoding="utf-8").write(doc)
     print("wrote", out, len(doc), "chars,", len(items), "projects")
 
