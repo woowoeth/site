@@ -11,21 +11,19 @@ PROJECTS = [
     {"repo": "",       "path": "/",        "icon": "/favicon.svg",
      "zh": "人类世界生存法则", "en": "Human World",
      "desc": "89 位人物与典籍的生存智慧，跨越 2600 年。每一条写清这个人真正留下的那个想法，以及今天怎么用。"},
-    {"repo": "idea",   "path": "/idea/",   "icon": "/idea/icon.svg",
-     "zh": "痛点雷达", "en": "Idea",
-     "desc": "每天读普通人用自己的话说自己问题的地方，把反复出现的缺口写成卡片。痛点足够痛，付费意愿足够强。"},
     {"repo": "skill",  "path": "/skill/",  "icon": "/skill/icon.svg",
      "zh": "Skill 商店", "en": "Skill Store",
      "desc": "每天上新的好玩 Agent Skill 精选店，逐个读过再上架。"},
-    {"repo": "zouni",  "path": "https://zouni.app/", "icon": "https://zouni.app/icon.svg",
+    # zouni 的图标内联成 data URI，不再跨站取 —— 导航页七条里只有它是
+    # 跨站取图（其余都是 /skill/icon.svg 这样的同源路径），也只有它不显示。
+    # 实测 https://zouni.app/icon.svg 在部分网络下被 302 到 urlblock.php。
+    # 根因是过滤还是 CORS 不重要：**跨站依赖去掉了，这条就不会再坏。**
+    {"repo": "zouni",  "path": "https://zouni.app/", "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciPjx0aXRsZT7otbDkvaA8L3RpdGxlPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiByeD0iMjIiIGZpbGw9IiMwYTBhMGEiLz48cGF0aCBkPSJNMjggNjIgUTUwIDMwIDcyIDYyIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNzIiIGN5PSIzOCIgcj0iNyIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg==",
      "zh": "走你", "en": "Zouni",
      "desc": "输入去哪儿、几天、多少预算，出一份能直接照着走的攻略。"},
     {"repo": "ai",     "path": "/ai/",     "icon": "/ai/icon.svg",
      "zh": "AI 泡沫检测仪", "en": "AI Bubble Monitor",
      "desc": "把「这轮是不是泡沫」拆成可核对的红线，逐条记分，破了就标出来。"},
-    {"repo": "pixel",  "path": "/pixel/",  "icon": "/pixel/icon.svg",
-     "zh": "像素板", "en": "PixelPad",
-     "desc": "24×24 原生像素画 Agent Skill——逐像素落调色板索引，不是生成大图再降采样。"},
 ]
 
 def e(s): return html.escape(s)
