@@ -24,6 +24,12 @@ PROJECTS = [
     {"repo": "ai",     "path": "/ai/",     "icon": "/ai/icon.svg",
      "zh": "AI 泡沫检测仪", "en": "AI Bubble Monitor",
      "desc": "把「这轮是不是泡沫」拆成可核对的红线，逐条记分，破了就标出来。"},
+    # podcast 一直在线上 index.html 里，却**从来没进过 PROJECTS** ——
+    # 也就是说这个生成器相对线上页是旧的。2026-08-25 我照它跑了一次构建，
+    # 就把「原声」整条挤掉了，是店主发现的。补回来，并在 main() 末尾加了闸。
+    {"repo": "podcast", "path": "/podcast/", "icon": "/podcast/icon.svg",
+     "zh": "原声", "en": "Podcast",
+     "desc": "每天从 49 档中英文播客里挑出值得记住的判断。要点和金句都锚定到原声的时间戳，金句逐字校验过才发——查不到出处的一律不上站。"},
 ]
 
 def e(s): return html.escape(s)
@@ -84,6 +90,39 @@ footer a{color:var(--ink-70);display:inline-block;min-height:24px;line-height:24
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 """
 
+
+# 已下架的条目 —— **只有写在这里的才允许从页面上消失。**
+#
+# 2026-08-25 加的，起因是我把「原声」弄丢了：podcast 一直在线上 index.html 里，
+# 却从来没进过 PROJECTS。我照着这个生成器跑了一次构建，它就按 PROJECTS 重生成，
+# 把 podcast 整条挤掉了 —— **生成器相对线上页是旧的，而我假设它是源头。**
+# 是店主发现的，不是我。
+#
+# 所以这道闸比「记得别漏」可靠：写入前拿当前 index.html 的条目比一遍，
+# 任何会消失的条目都必须在 REMOVED 里显式列出，否则拒绝写。
+# **删东西要动手写一行；漏东西什么都不用做 —— 闸门必须装在漏的那一侧。**
+REMOVED = {
+    "/idea/":  "2026-08-25 店主下架，仓库同期删除",
+    "/pixel/": "2026-08-25 店主下架，仓库同期删除",
+}
+
+
+def assert_no_drop(new_html: str, out: str) -> None:
+    """当前页上有、这次要写的页上没有 —— 除非在 REMOVED 里，否则不许写。"""
+    import re as _re
+    if not os.path.exists(out):
+        return
+    old = _re.findall(r'class="item" href="([^"]+)"', open(out, encoding="utf-8").read())
+    new = set(_re.findall(r'class="item" href="([^"]+)"', new_html))
+    dropped = [h for h in old if h not in new and h not in REMOVED]
+    if dropped:
+        raise SystemExit(
+            "拒绝写入：这次构建会让以下条目从导航上消失，而它们不在 REMOVED 里——\n"
+            + "".join(f"  {h}\n" for h in dropped)
+            + "如果是有意下架，把它写进 build_site.py 的 REMOVED；"
+            "如果不是，说明 PROJECTS 比线上页旧了，先把缺的补进 PROJECTS。")
+
+
 def main():
     items = []
     for p in PROJECTS:
@@ -137,6 +176,7 @@ def main():
 </html>
 """ % (SITE, json.dumps(ld, ensure_ascii=False), CSS, len(items), "\n".join(items))
     out = os.environ.get("OUT", "index.html")
+    assert_no_drop(doc, out)          # 漏掉条目是静默的，所以闸装在这里
     open(out, "w", encoding="utf-8").write(doc)
     print("wrote", out, len(doc), "chars,", len(items), "projects")
 
