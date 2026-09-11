@@ -11,9 +11,6 @@ PROJECTS = [
     {"repo": "",       "path": "/",        "icon": "/favicon.svg",
      "zh": "人类世界生存法则", "en": "Human World",
      "desc": "70+ 个人物与典籍的生存智慧，跨越 2600 年。每一条写清这个人真正留下的那一个想法，以及今天怎么用。"},
-    {"repo": "skill",  "path": "/skill/",  "icon": "/skill/icon.svg",
-     "zh": "品味", "en": "Taste",
-     "desc": "叫 SKILL.md 的文件已经百万量级，没人数得清。我们只挑值得装的，并且把挑它的理由写下来。"},
     # zouni 的图标内联成 data URI，不再跨站取 —— 导航页七条里只有它是
     # 跨站取图（其余都是 /skill/icon.svg 这样的同源路径），也只有它不显示。
     # 实测 https://zouni.app/icon.svg 在部分网络下被 302 到 urlblock.php。
@@ -104,6 +101,7 @@ footer a{color:var(--ink-70);display:inline-block;min-height:24px;line-height:24
 REMOVED = {
     "/idea/":  "2026-08-25 店主下架，仓库同期删除",
     "/pixel/": "2026-08-25 店主下架，仓库同期删除",
+    "/skill/": "2026-09-11 店主关停「品味」",
 }
 
 
@@ -144,7 +142,6 @@ def assert_no_drop(new_html: str, out: str) -> None:
 LIVE_CHECK = {
     # repo -> 该项目自己页面上，导航这条描述里必须能对上的关键片段
     "":        ["70+", "2600 年"],
-    "skill":   ["品味", "只挑值得装的"],
     "zouni":   ["计划赶得上变化"],
     "ai":      ["泡沫"],
     "podcast": ["世界太吵", "61 档"],
